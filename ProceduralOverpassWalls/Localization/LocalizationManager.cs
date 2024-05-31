@@ -33,7 +33,7 @@ namespace ProceduralObjects.Localization
             List<string> extensionFiles = new List<string>(), 
                 baseFiles = new List<string>();
 
-            foreach (string path in ProceduralObjectsMod.WorkshopOrLocalFolders)
+            foreach (string path in ProceduralObjectsMod.LocalFolders)
             {
                 var localeFiles = Directory.GetFiles(path, "*.polocale", SearchOption.AllDirectories);
                 if (!localeFiles.Any())
@@ -61,6 +61,9 @@ namespace ProceduralObjects.Localization
             foreach (var path in extensionFiles)
                 LoadAsExtension(path);
         }
+
+
+
         public bool IsExtension(string path)
         {
             if (!File.Exists(path))

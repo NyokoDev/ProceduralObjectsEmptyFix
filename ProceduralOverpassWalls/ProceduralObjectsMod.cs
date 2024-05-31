@@ -34,7 +34,7 @@ namespace ProceduralObjects
         }
 
 
-        public static readonly string VERSION = "1.7.8";
+        public static readonly string VERSION = "Local Version";
         public static readonly string DOCUMENTATION_URL = "http://proceduralobjects.shoutwiki.com/wiki/";
         public static readonly string SETTINGS_FILENAME = "ProceduralObjectsSettings";
         public static SettingsFile SettingsFile;
@@ -103,6 +103,20 @@ namespace ProceduralObjects
                 return DataLocation.localApplicationData + @"\ModConfig\SavedProceduralObjects\";
             }
         }
+
+
+        //Local folders change to make it work locally.
+        public static string[] LocalFolders
+        {
+            get
+            {
+                return (Directory.GetDirectories(DataLocation.addonsPath)
+                    .Concat(Directory.GetDirectories(DataLocation.gameContentPath + (ProceduralObjectsMod.IsLinux ? "/" : @"\") + "Mods")))
+                    .ToArray();
+            }
+        }
+
+
         public static string[] WorkshopOrLocalFolders
         {
             get
@@ -123,11 +137,39 @@ namespace ProceduralObjects
                 else
                 {
                     return (Directory.GetDirectories(DataLocation.addonsPath)
-                        .Concat(Directory.GetDirectories(DataLocation.gameContentPath  + (ProceduralObjectsMod.IsLinux ? "/" : @"\") + "Mods")))
+                        .Concat(Directory.GetDirectories(DataLocation.gameContentPath + (ProceduralObjectsMod.IsLinux ? "/" : @"\") + "Mods")))
                         .ToArray();
                 }
             }
         }
+
+        public static string[] WorkshopFolders
+        {
+            get
+            {
+                var subItems = PlatformService.workshop.GetSubscribedItems();
+                if (subItems.Length > 0)
+                {
+                    List<string> paths = new List<string>();
+                    foreach (PublishedFileId fileId in subItems)
+                    {
+                        string path = PlatformService.workshop.GetSubscribedItemPath(fileId);
+                        if (!Directory.Exists(path))
+                            continue;
+                        paths.Add(path);
+                    }
+                    return paths.ToArray();
+                }
+                else
+                {
+                    return (Directory.GetDirectories(DataLocation.addonsPath)
+                        .Concat(Directory.GetDirectories(DataLocation.gameContentPath + (ProceduralObjectsMod.IsLinux ? "/" : @"\") + "Mods")))
+                        .ToArray();
+                }
+            }
+        }
+
+
         public static void OpenURL(string url)
         {
             if (PlatformService.workshop.GetSubscribedItems().Length > 0)
